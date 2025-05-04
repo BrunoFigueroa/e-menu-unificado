@@ -1,6 +1,7 @@
 import app from "./app.js";
 import userRouter from "./routes/user.js";
 import mainRouter from "./routes/main.js";
+import orderRouter from "./routes/order.js";
 
 const port = 8080;
 
@@ -11,6 +12,7 @@ app.use((req, res, next) => {
 
 app.use(userRouter);
 app.use(mainRouter);
+app.use(orderRouter);
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en el puerto ${port}`);
