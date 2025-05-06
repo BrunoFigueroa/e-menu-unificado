@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Café Magnolia</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <section class="hero" id="inicio">
+    <div class="overlay" onclick="document.getElementById('menu').scrollIntoView({behavior: 'smooth'});">
+      <div class="bottom-overlay">
+        <h2 class="text-white">Bienvenido a Café Magnolia</h2>
+        <p class="text-white">Haz clic aquí para ver el menú</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu">
+    <header>
+      <h2>Mesa 12</h2>
+      <h1>Café Magnolia</h1>
+    </header>
+
+    <button id="categoria-toggle">Categorías</button>
+    <div id="categoria-panel">
+      <ul>
+        <li onclick="scrollToCategoria('desayunos')">Desayunos</li>
+        <li onclick="scrollToCategoria('sandwiches')">Sandwiches</li>
+        <li onclick="scrollToCategoria('cafes')">Cafés</li>
+        <li onclick="scrollToCategoria('tortas')">Tortas</li>
+      </ul>
+    </div>
+
+    <div class="container">
+      <div id="desayunos" class="menu-section">
+        <h3>Desayunos</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <img src="https://images.unsplash.com/photo-1600628422019-6f3f74a58c7e" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title">Huevos con tostadas</h5>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sandwiches" class="menu-section">
+        <h3>Sandwiches</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <img src="https://images.unsplash.com/photo-1613145993484-096f25fdc42d" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title">Sándwich de jamón y queso</h5>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="cafes" class="menu-section">
+        <h3>Cafés</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title">Capuccino</h5>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tortas" class="menu-section">
+        <h3>Tortas</h3>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="card">
+              <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2" class="card-img-top">
+              <div class="card-body">
+                <h5 class="card-title">Torta de chocolate</h5>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="logo-fondo">
+    <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
