@@ -1,110 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Café Magnolia</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-</head>
 
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <style>
+    body {
+      padding-top: 100px;
+    }
+  </style>
+</head>
 <body>
+
+  <!-- Header fijo -->
+<header class="fixed-top bg-light border-bottom shadow-sm">
+  <div class="container d-flex justify-content-between align-items-center py-3 position-relative">
+    <div class="text-start">
+      <h1 class="h5 mb-0">Café Magnolia</h1>
+    </div>
+    <div class="position-absolute start-50 translate-middle-x text-center">
+      <h2 class="mb-0">Mesa 12</h2>
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+      <!-- Botón del carrito -->
+      <button class="btn btn-outline-secondary position-relative me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCarrito" aria-controls="offcanvasCarrito">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="pedido-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          0
+          <span class="visually-hidden">productos en el carrito</span>
+        </span>
+      </button>
+
+      <!-- Botón de categorías -->
+      <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarCategorias" aria-controls="sidebarCategorias">
+        Categorías
+      </button>
+    </div>
+  </div>
+</header>
+
+  <!-- Offcanvas del carrito -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCarrito" aria-labelledby="offcanvasCarritoLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasCarritoLabel">Carrito de Compras</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body" id="carrito-body">
+      <p>No hay productos en el carrito.</p>
+      <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+        <div>
+          <h6 class="mb-1">Huevos con tostadas</h6>
+          <small class="text-muted">Cantidad: 1</small>
+        </div>
+        <span>$3.500</span>
+      </div>
+      <hr>
+      <div class="d-flex justify-content-between">
+        <strong>Total:</strong>
+        <strong>$3.500</strong>
+      </div>
+      <button class="btn btn-success w-100 mt-3">Ir al pago</button>
+    </div>
+  </div>
+
+  <!-- Sidebar de categorías -->
+  <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="sidebarCategorias" aria-labelledby="sidebarLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="sidebarLabel">Categorías</h5>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+    </div>
+    <div class="offcanvas-body">
+      <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item"><a href="#desayunos" class="nav-link text-white">Desayunos</a></li>
+        <li><a href="#sandwiches" class="nav-link text-white">Sandwiches</a></li>
+        <li><a href="#cafes" class="nav-link text-white">Cafés</a></li>
+        <li><a href="#tortas" class="nav-link text-white">Tortas</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Sección Hero -->
   <section class="hero" id="inicio">
     <div class="overlay" onclick="document.getElementById('menu').scrollIntoView({behavior: 'smooth'});">
-      <div class="bottom-overlay">
+      <div class="bottom-overlay text-center">
         <h2 class="text-white">Bienvenido a Café Magnolia</h2>
         <p class="text-white">Haz clic aquí para ver el menú</p>
       </div>
     </div>
   </section>
 
+  <!-- Sección Menú -->
   <section id="menu">
-    <header>
-      <h2>Mesa 12</h2>
-      <h1>Café Magnolia</h1>
-    </header>
-
-    <button id="categoria-toggle">Categorías</button>
-    <div id="categoria-panel">
-      <ul>
-        <li onclick="scrollToCategoria('desayunos')">Desayunos</li>
-        <li onclick="scrollToCategoria('sandwiches')">Sandwiches</li>
-        <li onclick="scrollToCategoria('cafes')">Cafés</li>
-        <li onclick="scrollToCategoria('tortas')">Tortas</li>
-      </ul>
-    </div>
-
-    <div class="container">
-      <div id="desayunos" class="menu-section">
+    <div class="container my-5">
+      <!-- Desayunos -->
+      <div id="desayunos" class="menu-section mb-5">
         <h3>Desayunos</h3>
         <div class="row">
           <div class="col-md-4">
             <div class="card">
-              <img src="https://images.unsplash.com/photo-1600628422019-6f3f74a58c7e" class="card-img-top">
+              <img src="https://images.unsplash.com/photo-1600628422019-6f3f74a58c7e" class="card-img-top" alt="Huevos con tostadas">
               <div class="card-body">
                 <h5 class="card-title">Huevos con tostadas</h5>
-                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido('Huevos con tostadas', 3500)">Agregar pedido</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="sandwiches" class="menu-section">
+      <!-- Sandwiches -->
+      <div id="sandwiches" class="menu-section mb-5">
         <h3>Sandwiches</h3>
         <div class="row">
           <div class="col-md-4">
             <div class="card">
-              <img src="https://images.unsplash.com/photo-1613145993484-096f25fdc42d" class="card-img-top">
+              <img src="https://images.unsplash.com/photo-1613145993484-096f25fdc42d" class="card-img-top" alt="Sándwich de jamón y queso">
               <div class="card-body">
                 <h5 class="card-title">Sándwich de jamón y queso</h5>
-                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido('Sándwich de jamón y queso', 3000)">Agregar pedido</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="cafes" class="menu-section">
+      <!-- Cafés -->
+      <div id="cafes" class="menu-section mb-5">
         <h3>Cafés</h3>
         <div class="row">
           <div class="col-md-4">
             <div class="card">
-              <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348" class="card-img-top">
+              <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348" class="card-img-top" alt="Capuccino">
               <div class="card-body">
                 <h5 class="card-title">Capuccino</h5>
-                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido('Capuccino', 2500)">Agregar pedido</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="tortas" class="menu-section">
+      <!-- Tortas -->
+      <div id="tortas" class="menu-section mb-5">
         <h3>Tortas</h3>
         <div class="row">
           <div class="col-md-4">
             <div class="card">
-              <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2" class="card-img-top">
+              <img src="https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2" class="card-img-top" alt="Torta de chocolate">
               <div class="card-body">
                 <h5 class="card-title">Torta de chocolate</h5>
-                <button class="btn btn-success agregar-btn" onclick="agregarPedido()">Agregar pedido</button>
+                <button class="btn btn-success agregar-btn" onclick="agregarPedido('Torta de chocolate', 4000)">Agregar pedido</button>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <div class="logo-fondo">
-    <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png">
+  <!-- Logo inferior -->
+  <div class="logo-fondo text-center my-5">
+    <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png" alt="Logo Café" style="width: 100px;">
   </div>
 
+  <!-- Script personalizado -->
   <script src="script.js"></script>
-</body>
 
+</body>
 </html>

@@ -1,6 +1,10 @@
 import app from "./app.js";
 import userRouter from "./routes/user.js";
 import mainRouter from "./routes/main.js";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+
+
 
 const port = 8080;
 

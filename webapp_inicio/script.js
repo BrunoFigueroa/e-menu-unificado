@@ -1,31 +1,108 @@
 // === script.js ===
 let contador = 0;
+let carrito = [];
 
-function agregarPedido() {
+function agregarPedido(nombre, precio = 3500) {
   contador++;
-  let box = document.getElementById('pedido-box');
-  if (!box) {
-    box = document.createElement('div');
-    box.id = 'pedido-box';
-    box.className = 'pedido-box';
-    box.innerHTML = `
-      <i class="fas fa-shopping-cart"></i>
-      <span id="pedido-count">${contador}</span>
-      <button class="btn btn-light btn-sm">Ver pedido</button>
-    `;
-    document.body.appendChild(box);
+  actualizarPedidoBox();
+
+  const productoExistente = carrito.find(item => item.nombre === nombre);
+  if (productoExistente) {
+    productoExistente.cantidad++;
   } else {
-    document.getElementById('pedido-count').textContent = contador;
+    carrito.push({ nombre: nombre, cantidad: 1, precio: precio });
+  }
+  renderizarCarrito();
+}
+
+function actualizarPedidoBox() {
+  const countSpan = document.getElementById('pedido-count');
+  if (countSpan) {
+    countSpan.textContent = contador;
   }
 }
 
+function aumentarCantidad(nombre) {
+  const producto = carrito.find(item => item.nombre === nombre);
+  if (producto) {
+    producto.cantidad++;
+    contador++;
+    actualizarPedidoBox();
+    renderizarCarrito();
+  }
+}
+
+function disminuirCantidad(nombre) {
+  const producto = carrito.find(item => item.nombre === nombre);
+  if (producto && producto.cantidad > 0) {
+    producto.cantidad--;
+    contador--;
+    if (producto.cantidad <= 0) {
+      eliminarProducto(nombre);
+    }
+    actualizarPedidoBox();
+    renderizarCarrito();
+  }
+}
+
+function eliminarProducto(nombre) {
+  const producto = carrito.find(item => item.nombre === nombre);
+  if (producto) {
+    contador -= producto.cantidad;
+    carrito = carrito.filter(item => item.nombre !== nombre);
+    actualizarPedidoBox();
+    renderizarCarrito();
+  }
+}
+
+function renderizarCarrito() {
+  const contenedor = document.getElementById("carrito-body");
+  contenedor.innerHTML = "";
+
+  if (carrito.length === 0) {
+    contenedor.innerHTML = "<p class='text-center'>El carrito está vacío.</p>";
+    return;
+  }
+
+  let total = 0;
+
+  carrito.forEach(item => {
+    const subtotal = item.precio * item.cantidad;
+    total += subtotal;
+
+    const nombreSeguro = item.nombre.replace(/'/g, "\\'");
+
+    contenedor.innerHTML += `
+      <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+        <div>
+          <h6 class="mb-1">${item.nombre}</h6>
+          <small class="text-muted">Cantidad: ${item.cantidad}</small><br>
+          <button class="btn btn-sm btn-outline-secondary me-1" onclick="disminuirCantidad('${nombreSeguro}')">-</button>
+          <button class="btn btn-sm btn-outline-secondary me-1" onclick="aumentarCantidad('${nombreSeguro}')">+</button>
+          <button class="btn btn-sm btn-danger" onclick="eliminarProducto('${nombreSeguro}')">Eliminar</button>
+        </div>
+        <span>$${subtotal.toLocaleString()}</span>
+      </div>
+    `;
+  });
+
+  contenedor.innerHTML += `
+    <hr>
+    <div class="d-flex justify-content-between">
+      <strong>Total:</strong>
+      <strong>$${total.toLocaleString()}</strong>
+    </div>
+    <button class="btn btn-success w-100 mt-3">Finalizar compra</button>
+  `;
+}
+
+// === Botón categoría ===
 function scrollToCategoria(id) {
   document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
   document.getElementById('categoria-panel').style.display = 'none';
   document.getElementById('categoria-toggle').style.display = 'block';
 }
 
-// Mostrar botón de categoría solo en la sección del menú
 window.addEventListener('scroll', () => {
   const menuSection = document.getElementById('menu');
   const toggleBtn = document.getElementById('categoria-toggle');
@@ -43,3 +120,8 @@ document.getElementById('categoria-toggle').addEventListener('click', () => {
   document.getElementById('categoria-panel').style.display = 'block';
   document.getElementById('categoria-toggle').style.display = 'none';
 });
+
+
+
+
+
