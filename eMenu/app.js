@@ -5,6 +5,8 @@ import cors from "cors";
 
 const app = express();
 
+const PORT = 3000;
+
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -24,5 +26,14 @@ app.use(
     cookie: { secure: false },
   })
 );
+
+app.get('/', (req, res) => {
+  res.send('¡Servidor funcionando!');
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
+});
+
 
 export default app;

@@ -1,0 +1,27 @@
+{
+  "name": "e-menu-backend",
+  "version": "1.0.0",
+  "description": "Backend para eMenu - Gestión de restaurante",
+  "main": "DB_Endpoints.js",
+  "scripts": {
+    "start": "node DB_Endpoints.js",
+    "dev": "nodemon DB_Endpoints.js"
+  },
+  "keywords": [
+    "express",
+    "postgresql",
+    "restaurante",
+    "backend",
+    "api"
+  ],
+  "author": "Ignacio",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

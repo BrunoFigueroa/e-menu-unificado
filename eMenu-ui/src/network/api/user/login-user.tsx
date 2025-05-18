@@ -10,12 +10,13 @@ export type loginUserResponse = {
   message: string;
 };
 
+
 export const loginUser = async ({
   nombre,
   email,
 }: loginUserRequest): Promise<loginUserResponse> => {
   try {
-    const result = await fetch(`${config.api.url}/login`, {
+    const result = await fetch(`${config.api.url}/login`, { ///create_plato
       method: "POST",
       headers: {
         "Content-Type": "application/json",
