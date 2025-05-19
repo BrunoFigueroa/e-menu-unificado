@@ -4,7 +4,11 @@ import React, { Fragment } from "react";
 
 export interface Order {
   orderID: string;
-  pedido: string;
+  fecha_hora: string;
+  mesa: string;
+  id_estado_pedido: string;
+  tiempo_espera_actualizado: string;
+  comentarios: string;
 }
 
 export interface OrderProps {
@@ -31,7 +35,10 @@ const Order = ({ userOrder }: OrderProps) => {
               <div className="mb-4">
                 <div className="">
                   <h5 className="font-semibold font-mono">
-                    Pedido: {order.pedido}
+                    Mesa: {order.mesa}
+                  </h5>
+                  <h5 className="font-semibold font-mono">
+                    Comentarios: {order.comentarios}
                   </h5>
                   <p className="">
                     <small className="font-mono">ID: #{order.orderID}</small>

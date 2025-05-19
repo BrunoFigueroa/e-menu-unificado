@@ -48,13 +48,11 @@ const ProfileView = () => {
 
   return (
     <Fragment>
-      <div className="py-8 mx-40 text-xl rounded-lg bg-gray-100">
         <Profile
           user={user}
           userRecipes={userRecipes}
           favoritesRecipes={favoritesRecipes}
         />
-      </div>
     </Fragment>
   );
 };

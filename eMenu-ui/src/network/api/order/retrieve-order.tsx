@@ -7,9 +7,13 @@ export type retrieveOrderRequest = {
 export type retrieveOrderResponse = {
   success: boolean;
   message: string;
-  order: {
-    orderid: string;
-    pedido: string;
+  pedido: {
+    id_pedido: string;
+    fecha_hora: string;
+    mesa: string;
+    id_estado_pedido: string;
+    tiempo_espera_actualizado: string;
+    comentarios: string;
   };
 };
 
@@ -17,7 +21,7 @@ export const retrieveOrder = async ({
   orderID,
 }: retrieveOrderRequest): Promise<retrieveOrderResponse> => {
   try {
-    const result = await fetch(`${config.api.url}/order/${orderID}`, {
+    const result = await fetch(`${config.api.url}/read_pedido/${orderID}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -31,8 +35,8 @@ export const retrieveOrder = async ({
     const response: retrieveOrderResponse = await result.json();
 
     if (!response.success) {
-        throw new Error(response.message || "No se pudo obtener el pedido.");
-      }
+      throw new Error(response.message || "No se pudo obtener el pedido.");
+    }
 
     return response;
   } catch (error) {

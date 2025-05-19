@@ -46,13 +46,13 @@ const Profile = ({ user, userRecipes, favoritesRecipes }: ProfileProps) => {
 
   return (
     <Fragment>
-      <div className="py-4 mx-40 text-xl rounded-lg bg-gray-100">
+      <div className="py-12 px-4 mx-auto text-xl rounded-lg bg-gray-100">
         <h2 className="text-center text-3xl font-mono">
           Bienvenido a tu perfil{" "}
           <span className="text-indigo-600">{user.name}</span>
         </h2>
 
-        <div className="grid col-span-3 gap-3 mt-6 justify-start">
+        <div className="grid col-span-3 gap-3 mt-6 justify-center">
           <h2 className="text-2xl font-mono mt-2">Tus datos</h2>
           <div className="border border-gray-300 py-2 px-12 rounded-lg">
             <div className="mb-4">
@@ -87,95 +87,103 @@ const Profile = ({ user, userRecipes, favoritesRecipes }: ProfileProps) => {
           </div>
         </div>
 
-        <h2 className="text-2xl font-mono mt-6">Tus Recetas</h2>
-        <div className="grid col-span-3 gap-10 mt-6 justify-start">
-          {userRecipes.map((recipe) => (
-            <div
-              className="border border-gray-300 py-2 px-12 rounded-lg"
-              key={recipe.id}
-            >
-              <div className="mb-4">
-                <div className="">
-                  <h5 className="font-semibold font-mono">{recipe.nombre}</h5>
-                  <p className="">
-                    <small className="font-mono">
-                      Categoría: {recipe.categoria}
-                    </small>
+        <div className="grid col-span-3 gap-3 mt-6 justify-center">
+          <h2 className="text-2xl font-mono mt-6 text-center">Tus Recetas</h2>
+          <div className="grid col-span-3 gap-10 mt-6 justify-center">
+            {userRecipes.map((recipe) => (
+              <div
+                className="border border-gray-300 py-2 px-12 rounded-lg"
+                key={recipe.id}
+              >
+                <div className="mb-4">
+                  <div className="">
+                    <h5 className="font-semibold font-mono">{recipe.nombre}</h5>
+                    <p className="">
+                      <small className="font-mono">
+                        Categoría: {recipe.categoria}
+                      </small>
+                    </p>
+                    <p className="">
+                      <small className="font-mono">
+                        Ingredientes: {recipe.ingredientes}
+                      </small>
+                    </p>
+                    <p className="">
+                      <small className="font-mono">
+                        Preparación: {recipe.preparacion}
+                      </small>
+                    </p>
+                    <p className="">
+                      <small className="font-mono">
+                        Tiempo: {recipe.tiempo}
+                      </small>
+                    </p>
+                    <p className="">
+                      <small className="font-mono">Likes: {recipe.votos}</small>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-3 mb-4">
+                  <p>
+                    <button
+                      onClick={() => handleEditRecipe(recipe.id)}
+                      className="bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 font-mono text-lg"
+                    >
+                      Editar receta
+                    </button>
                   </p>
-                  <p className="">
-                    <small className="font-mono">
-                      Ingredientes: {recipe.ingredientes}
-                    </small>
-                  </p>
-                  <p className="">
-                    <small className="font-mono">
-                      Preparación: {recipe.preparacion}
-                    </small>
-                  </p>
-                  <p className="">
-                    <small className="font-mono">Tiempo: {recipe.tiempo}</small>
-                  </p>
-                  <p className="">
-                    <small className="font-mono">Likes: {recipe.votos}</small>
+                  <p>
+                    <button
+                      onClick={() => handleDeleteRecipe(recipe.id)}
+                      className="bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 font-mono text-lg"
+                    >
+                      Eliminar receta
+                    </button>
                   </p>
                 </div>
               </div>
-              <div className="flex gap-4 mt-3 mb-4">
-                <p>
-                  <button
-                    onClick={() => handleEditRecipe(recipe.id)}
-                    className="bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 font-mono text-lg"
-                  >
-                    Editar receta
-                  </button>
-                </p>
-                <p>
-                  <button
-                    onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 font-mono text-lg"
-                  >
-                    Eliminar receta
-                  </button>
-                </p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <h2 className="text-2xl font-mono mt-6">Tus recetas favoritas</h2>
-        <div className="grid col-span-3 gap-10 mt-6 justify-start">
-          {favoritesRecipes.map((recipe: FavoritesRecipes) => (
-            <div
-              className="border border-gray-300 py-2 px-12 rounded-lg"
-              key={recipe.id}
-            >
-              <div className="mb-4">
-                <div className="">
-                  <h5 className="font-semibold font-mono">{recipe.nombre}</h5>
-                  <p className="">
-                    <small className="font-mono">
-                      Ingredientes: {recipe.ingredientes}
-                    </small>
-                  </p>
-                  <p className="">
-                    <small className="font-mono">
-                      Preparación: {recipe.preparacion}
-                    </small>
+        <div className="grid col-span-3 gap-3 mt-6 justify-center">
+          <h2 className="text-2xl font-mono mt-6 text-center">
+            Tus recetas favoritas
+          </h2>
+          <div className="grid col-span-3 gap-10 mt-6 justify-start">
+            {favoritesRecipes.map((recipe: FavoritesRecipes) => (
+              <div
+                className="border border-gray-300 py-2 px-12 rounded-lg"
+                key={recipe.id}
+              >
+                <div className="mb-4">
+                  <div className="">
+                    <h5 className="font-semibold font-mono">{recipe.nombre}</h5>
+                    <p className="">
+                      <small className="font-mono">
+                        Ingredientes: {recipe.ingredientes}
+                      </small>
+                    </p>
+                    <p className="">
+                      <small className="font-mono">
+                        Preparación: {recipe.preparacion}
+                      </small>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-4 mt-3 mb-4">
+                  <p>
+                    <button
+                      onClick={() => handleRemoveFavorite(recipe.id)}
+                      className="bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 font-mono text-lg"
+                    >
+                      Eliminar de favoritas
+                    </button>
                   </p>
                 </div>
               </div>
-              <div className="flex gap-4 mt-3 mb-4">
-                <p>
-                  <button
-                    onClick={() => handleRemoveFavorite(recipe.id)}
-                    className="bg-indigo-500 hover:bg-indigo-600 rounded-lg px-3 font-mono text-lg"
-                  >
-                    Eliminar de favoritas
-                  </button>
-                </p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         <div className="flex gap-4 mt-8">
