@@ -738,25 +738,45 @@ router.delete("/delete_detalle_pedido/:id", async (req, res) => {
 });
 
 router.post("/select_day_plate", async (req, res) => {
-  const { id_plato, fecha } = req.body;
+  const { id_plato, id_menu } = req.body;
+
   try {
-    await pool.query(
-      `INSERT INTO menuDay (id_plato, fecha) VALUES ($1, $2)`,
-      [id_plato, fecha]
+    const result = await pool.query(
+      `SELECT id_categoria
+       FROM Categorias
+       WHERE nombre = 'Menú del Día' AND id_menu = $1`,
+      [id_menu]
     );
-    const plato = await pool.query(`SELECT * FROM Platos WHERE id_plato = $1`, [
-      id_plato,
-    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No existe categoría 'Menú del Día' para ese menú",
+      });
+    }
+    const id_categoria = result.rows[0].id_categoria;
+
+    await pool.query(
+      `UPDATE Platos
+       SET id_categoria = $1
+       WHERE id_plato = $2`,
+      [id_categoria, id_plato]
+    );
+
+    const platosResult = await pool.query(
+      `SELECT * FROM Platos WHERE id_plato = $1`,
+      [id_plato]
+    );
 
     res.json({
       success: true,
-      message: "Plato seleccionado para el día",
-      plato: plato.rows[0],
+      message: "Plato asignado al menú del día correctamente",
+      plato: platosResult.rows[0],
     });
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Error al seleccionar el plato para el día",
+      message: "Error al asignar el plato al menú del día",
       error: err.message,
     });
   }

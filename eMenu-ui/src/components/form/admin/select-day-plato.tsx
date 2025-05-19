@@ -7,46 +7,41 @@ import { toast } from "sonner";
 import { useSelectDayPlatoHook } from "@/hooks/plato/use-select-day-plato";
 import { useSearchPlatoHook } from "@/hooks/plato/use-search-plato";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
-const getTodayDate = () => {
-  const today = new Date();
-  const day = String(today.getDate()).padStart(2, "0");
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const year = today.getFullYear();
-  return `${day}-${month}-${year}`;
-};
 
 const formSchema = z.object({
   id_plato: z.string().min(1, {
     message: "El plato es requerido.",
   }),
-  fecha: z.string().min(1, {
-    message: "La fecha es requerida.",
+  id_menu: z.string().min(1, {
+    message: "El día es requerido.",
   }),
 });
+
+const diasSemana = [
+  { id_menu: "1", nombre: "Lunes" },
+  { id_menu: "2", nombre: "Martes" },
+  { id_menu: "3", nombre: "Miércoles" },
+  { id_menu: "4", nombre: "Jueves" },
+  { id_menu: "5", nombre: "Viernes" },
+  { id_menu: "6", nombre: "Sábado" },
+  { id_menu: "7", nombre: "Domingo" },
+];
 
 export const SelectDayPlatoForm = () => {
   const router = useRouter();
   const { isPending, mutate } = useSelectDayPlatoHook();
-  const [todayDate, setTodayDate] = useState(getTodayDate());
   const { data, isPending: isLoadingPlatos } = useSearchPlatoHook({});
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fecha: todayDate,
+      id_menu: diasSemana[0].id_menu,
     },
   });
-
-  useEffect(() => {
-    setValue("fecha", todayDate);
-  }, [todayDate, setValue]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     await mutate(values, {
@@ -101,7 +96,30 @@ export const SelectDayPlatoForm = () => {
           )}
         </div>
 
-        <input type="hidden" {...register("fecha")} />
+        <div>
+          <label
+            htmlFor="id_menu"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Día
+          </label>
+          <select
+            id="id_menu"
+            {...register("id_menu")}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+          >
+            {diasSemana.map((dia) => (
+              <option key={dia.id_menu} value={dia.id_menu}>
+                {dia.nombre}
+              </option>
+            ))}
+          </select>
+          {errors.id_menu && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.id_menu.message}
+            </p>
+          )}
+        </div>
 
         <div>
           <button

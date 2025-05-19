@@ -2,7 +2,7 @@ import { config } from "@/config";
 
 export type selectDayPlatoRequest = {
   id_plato: string;
-  fecha: string;
+  id_menu: string;
 };
 
 export type selectDayPlatoResponse = {
@@ -24,7 +24,7 @@ export type selectDayPlatoResponse = {
 
 export const selectDayPlato = async ({
   id_plato,
-  fecha,
+  id_menu,
 }: selectDayPlatoRequest): Promise<selectDayPlatoResponse> => {
   try {
     const result = await fetch(`${config.api.url}/select_day_plate`, {
@@ -34,7 +34,7 @@ export const selectDayPlato = async ({
       },
       body: JSON.stringify({
         id_plato,
-        fecha,
+        id_menu,
       }),
     });
 
