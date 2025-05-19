@@ -1,9 +1,9 @@
 import { Pool } from "pg";
 
-const pool = new Pool({
+const pool = new Pool({ // aca debe configurar con los parametros de su base de datos local psql
   user: "postgres",
   host: "localhost",
-  database: "proyectobdd",
+  database: "emenu4",
   password: "postgres",
   port: 5432,
 });

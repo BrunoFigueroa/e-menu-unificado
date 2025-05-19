@@ -21,16 +21,24 @@ const OrderView = () => {
     return <div className="font-mono py-4">Error: {error?.message}</div>;
   }
 
-  const userOrder = data?.order
-    ? Array.isArray(data.order)
-      ? data.order.map((order) => ({
-          orderID: order.orderid,
-          pedido: order.pedido,
+  const userOrder = data?.pedido
+    ? Array.isArray(data.pedido)
+      ? data.pedido.map((pedido) => ({
+          orderID: pedido.id_pedido,
+          fecha_hora: pedido.fecha_hora,
+          mesa: pedido.mesa,
+          id_estado_pedido: pedido.id_estado_pedido,
+          tiempo_espera_actualizado: pedido.tiempo_espera_actualizado,
+          comentarios: pedido.comentarios,
         }))
       : [
           {
-            orderID: data.order.orderid,
-            pedido: data.order.pedido,
+            orderID: data.pedido.id_pedido,
+            fecha_hora: data.pedido.fecha_hora,
+            mesa: data.pedido.mesa,
+            id_estado_pedido: data.pedido.id_estado_pedido,
+            tiempo_espera_actualizado: data.pedido.tiempo_espera_actualizado,
+            comentarios: data.pedido.comentarios,
           },
         ]
     : [];

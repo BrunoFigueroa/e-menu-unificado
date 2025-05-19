@@ -1,16 +1,26 @@
-const { Pool } = require('pg');
+import express from "express";
+const router = express.Router();
+import { pool } from "../config/db.js";
 
-const pool = new Pool({
-  user: 'usuario',
-  host: 'localhost',
-  database: 'emenu4',
-  password: 'contrasena',
-  port: 5432,
+router.get("/", (req, res) => {
+  res.send("Hello world! (si esto no aparece, hay un problema con express)");
 });
+
+// ping para testear conexion.
+router.get("/ping", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.send(`Conexión exitosa: ${result.rows[0].now}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error de conexión a la base de datos");
+  }
+});
+
 // Operaciones CRUD para todas las tablas.
 
 // Platos:
-app.post('/create_plato', async (req, res) => {
+router.post("/create_plato", async (req, res) => {
   const {
     id_categoria,
     nombre,
@@ -20,7 +30,7 @@ app.post('/create_plato', async (req, res) => {
     imagen_url,
     disponible,
     creado_por_admin_id,
-    modificado_por_admin_id
+    modificado_por_admin_id,
   } = req.body;
 
   try {
@@ -39,22 +49,19 @@ app.post('/create_plato', async (req, res) => {
         imagen_url,
         disponible,
         creado_por_admin_id,
-        modificado_por_admin_id
+        modificado_por_admin_id,
       ]
     );
-   res.json({
-  success: true,
-  data: result.rows[0],
-});
+    res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/read_plato/:id', async (req, res) => {
+router.get("/read_plato/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM Platos WHERE id_plato = $1',
+      "SELECT * FROM Platos WHERE id_plato = $1",
       [req.params.id]
     );
     res.json(result.rows[0]);
@@ -63,18 +70,24 @@ app.get('/read_plato/:id', async (req, res) => {
   }
 });
 
-app.get('/read_platos', async (req, res) => {
+router.get("/read_platos", async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM Platos'
-    );
-    res.json(result.rows[0]);
+    const result = await pool.query("SELECT * FROM Platos");
+    res.json({
+      success: true,
+      message: "Platos encontrados",
+      platos: result.rows,
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error al encontrar los platos",
+      error: err.message,
+    });
   }
 });
 
-app.put('/update_plato/:id', async (req, res) => {
+router.put("/update_plato/:id", async (req, res) => {
   const {
     id_categoria,
     nombre,
@@ -84,7 +97,7 @@ app.put('/update_plato/:id', async (req, res) => {
     imagen_url,
     disponible,
     creado_por_admin_id,
-    modificado_por_admin_id
+    modificado_por_admin_id,
   } = req.body;
 
   try {
@@ -92,7 +105,7 @@ app.put('/update_plato/:id', async (req, res) => {
       `UPDATE Platos SET
         id_categoria = $2,
         nombre = $3,
-        precio = $4,
+        precio = $4;
         descripcion = $5,
         tiempo_estimado = $6,
         imagen_url = $7,
@@ -110,7 +123,7 @@ app.put('/update_plato/:id', async (req, res) => {
         imagen_url,
         disponible,
         creado_por_admin_id,
-        modificado_por_admin_id
+        modificado_por_admin_id,
       ]
     );
     res.json(result.rows[0]);
@@ -119,9 +132,9 @@ app.put('/update_plato/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_plato/:id', async (req, res) => {
+router.delete("/delete_plato/:id", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Platos WHERE id_plato = $1', [req.params.id]);
+    await pool.query("DELETE FROM Platos WHERE id_plato = $1", [req.params.id]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -129,7 +142,7 @@ app.delete('/delete_plato/:id', async (req, res) => {
 });
 
 // Configuracion restaurante CRUD
-app.post('/create_configuracion', async (req, res) => {
+router.post("/create_configuracion", async (req, res) => {
   const { nombre_restaurante, direccion, url_qr, otros_detalles } = req.body;
   try {
     const result = await pool.query(
@@ -143,10 +156,10 @@ app.post('/create_configuracion', async (req, res) => {
   }
 });
 
-app.get('/read_configuracion/:id', async (req, res) => {
+router.get("/read_configuracion/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      'SELECT * FROM Configuracion_restaurante WHERE id_configuracion = $1',
+      "SELECT * FROM Configuracion_restaurante WHERE id_configuracion = $1",
       [req.params.id]
     );
     res.json(result.rows[0]);
@@ -155,16 +168,16 @@ app.get('/read_configuracion/:id', async (req, res) => {
   }
 });
 
-app.get('/read_configuraciones', async (req, res) => {
+router.get("/read_configuraciones", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Configuracion_restaurante');
+    const result = await pool.query("SELECT * FROM Configuracion_restaurante");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/update_configuracion/:id', async (req, res) => {
+router.put("/update_configuracion/:id", async (req, res) => {
   const { nombre_restaurante, direccion, url_qr, otros_detalles } = req.body;
   try {
     const result = await pool.query(
@@ -179,9 +192,12 @@ app.put('/update_configuracion/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_configuracion/:id', async (req, res) => {
+router.delete("/delete_configuracion/:id", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Configuracion_restaurante WHERE id_configuracion = $1', [req.params.id]);
+    await pool.query(
+      "DELETE FROM Configuracion_restaurante WHERE id_configuracion = $1",
+      [req.params.id]
+    );
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -189,8 +205,9 @@ app.delete('/delete_configuracion/:id', async (req, res) => {
 });
 
 // administradores CRUD
-app.post('/create_administrador', async (req, res) => {
-  const { id_configuracion, usuario, contrasena_hash, nombre_completo, email } = req.body;
+router.post("/create_administrador", async (req, res) => {
+  const { id_configuracion, usuario, contrasena_hash, nombre_completo, email } =
+    req.body;
   try {
     const result = await pool.query(
       `INSERT INTO Administradores (id_configuracion, usuario, contrasena_hash, nombre_completo, email)
@@ -203,31 +220,11 @@ app.post('/create_administrador', async (req, res) => {
   }
 });
 
-app.get('/read_administrador/:id', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM Administradores WHERE id_administrador = $1', [req.params.id]);
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('/read_administradores', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM Administradores');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.put('/update_administrador/:id', async (req, res) => {
-  const { id_configuracion, usuario, contrasena_hash, nombre_completo, email } = req.body;
+router.get("/read_administrador/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      `UPDATE Administradores SET id_configuracion = $2, usuario = $3, contrasena_hash = $4,
-        nombre_completo = $5, email = $6 WHERE id_administrador = $1 RETURNING *`,
-      [req.params.id, id_configuracion, usuario, contrasena_hash, nombre_completo, email]
+      "SELECT * FROM Administradores WHERE id_administrador = $1",
+      [req.params.id]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -235,9 +232,43 @@ app.put('/update_administrador/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_administrador/:id', async (req, res) => {
+router.get("/read_administradores", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Administradores WHERE id_administrador = $1', [req.params.id]);
+    const result = await pool.query("SELECT * FROM Administradores");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/update_administrador/:id", async (req, res) => {
+  const { id_configuracion, usuario, contrasena_hash, nombre_completo, email } =
+    req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE Administradores SET id_configuracion = $2, usuario = $3, contrasena_hash = $4,
+        nombre_completo = $5, email = $6 WHERE id_administrador = $1 RETURNING *`,
+      [
+        req.params.id,
+        id_configuracion,
+        usuario,
+        contrasena_hash,
+        nombre_completo,
+        email,
+      ]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/delete_administrador/:id", async (req, res) => {
+  try {
+    await pool.query(
+      "DELETE FROM Administradores WHERE id_administrador = $1",
+      [req.params.id]
+    );
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -245,7 +276,7 @@ app.delete('/delete_administrador/:id', async (req, res) => {
 });
 
 // metricas CRUD
-app.post('/create_metrica', async (req, res) => {
+router.post("/create_metrica", async (req, res) => {
   const { id_configuracion, fecha_hora, tipo_metrica, descripcion } = req.body;
   try {
     const result = await pool.query(
@@ -259,25 +290,28 @@ app.post('/create_metrica', async (req, res) => {
   }
 });
 
-app.get('/read_metrica/:id', async (req, res) => {
+router.get("/read_metrica/:id", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Metricas WHERE id_metrica = $1', [req.params.id]);
+    const result = await pool.query(
+      "SELECT * FROM Metricas WHERE id_metrica = $1",
+      [req.params.id]
+    );
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/read_metricas', async (req, res) => {
+router.get("/read_metricas", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Metricas');
+    const result = await pool.query("SELECT * FROM Metricas");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/update_metrica/:id', async (req, res) => {
+router.put("/update_metrica/:id", async (req, res) => {
   const { id_configuracion, fecha_hora, tipo_metrica, descripcion } = req.body;
   try {
     const result = await pool.query(
@@ -291,9 +325,11 @@ app.put('/update_metrica/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_metrica/:id', async (req, res) => {
+router.delete("/delete_metrica/:id", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Metricas WHERE id_metrica = $1', [req.params.id]);
+    await pool.query("DELETE FROM Metricas WHERE id_metrica = $1", [
+      req.params.id,
+    ]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -301,13 +337,25 @@ app.delete('/delete_metrica/:id', async (req, res) => {
 });
 
 // menus CRUD
-app.post('/create_menu', async (req, res) => {
-  const { nombre, descripcion, activo, creado_por_admin_id, modificado_por_admin_id } = req.body;
+router.post("/create_menu", async (req, res) => {
+  const {
+    nombre,
+    descripcion,
+    activo,
+    creado_por_admin_id,
+    modificado_por_admin_id,
+  } = req.body;
   try {
     const result = await pool.query(
       `INSERT INTO Menus (nombre, descripcion, activo, creado_por_admin_id, modificado_por_admin_id)
        VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [nombre, descripcion, activo, creado_por_admin_id, modificado_por_admin_id]
+      [
+        nombre,
+        descripcion,
+        activo,
+        creado_por_admin_id,
+        modificado_por_admin_id,
+      ]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -315,32 +363,47 @@ app.post('/create_menu', async (req, res) => {
   }
 });
 
-app.get('/read_menu/:id', async (req, res) => {
+router.get("/read_menu/:id", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Menus WHERE id_menu = $1', [req.params.id]);
+    const result = await pool.query("SELECT * FROM Menus WHERE id_menu = $1", [
+      req.params.id,
+    ]);
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/read_menus', async (req, res) => {
+router.get("/read_menus", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Menus');
+    const result = await pool.query("SELECT * FROM Menus");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/update_menu/:id', async (req, res) => {
-  const { nombre, descripcion, activo, creado_por_admin_id, modificado_por_admin_id } = req.body;
+router.put("/update_menu/:id", async (req, res) => {
+  const {
+    nombre,
+    descripcion,
+    activo,
+    creado_por_admin_id,
+    modificado_por_admin_id,
+  } = req.body;
   try {
     const result = await pool.query(
       `UPDATE Menus SET nombre = $2, descripcion = $3, activo = $4,
         creado_por_admin_id = $5, modificado_por_admin_id = $6
        WHERE id_menu = $1 RETURNING *`,
-      [req.params.id, nombre, descripcion, activo, creado_por_admin_id, modificado_por_admin_id]
+      [
+        req.params.id,
+        nombre,
+        descripcion,
+        activo,
+        creado_por_admin_id,
+        modificado_por_admin_id,
+      ]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -348,9 +411,9 @@ app.put('/update_menu/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_menu/:id', async (req, res) => {
+router.delete("/delete_menu/:id", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Menus WHERE id_menu = $1', [req.params.id]);
+    await pool.query("DELETE FROM Menus WHERE id_menu = $1", [req.params.id]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -358,8 +421,9 @@ app.delete('/delete_menu/:id', async (req, res) => {
 });
 
 // estados pedido CRUD
-app.post('/create_estado', async (req, res) => {
-  const { nombre_estado, creado_por_admin_id, modificado_por_admin_id } = req.body;
+router.post("/create_estado", async (req, res) => {
+  const { nombre_estado, creado_por_admin_id, modificado_por_admin_id } =
+    req.body;
   try {
     const result = await pool.query(
       `INSERT INTO Estados_pedido (nombre_estado, creado_por_admin_id, modificado_por_admin_id)
@@ -372,32 +436,11 @@ app.post('/create_estado', async (req, res) => {
   }
 });
 
-app.get('/read_estado/:id', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM Estados_pedido WHERE id_estado_pedido = $1', [req.params.id]);
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('/read_estados', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM Estados_pedido');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.put('/update_estado/:id', async (req, res) => {
-  const { nombre_estado, creado_por_admin_id, modificado_por_admin_id } = req.body;
+router.get("/read_estado/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      `UPDATE Estados_pedido SET nombre_estado = $2,
-        creado_por_admin_id = $3, modificado_por_admin_id = $4
-       WHERE id_estado_pedido = $1 RETURNING *`,
-      [req.params.id, nombre_estado, creado_por_admin_id, modificado_por_admin_id]
+      "SELECT * FROM Estados_pedido WHERE id_estado_pedido = $1",
+      [req.params.id]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -405,9 +448,41 @@ app.put('/update_estado/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_estado/:id', async (req, res) => {
+router.get("/read_estados", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Estados_pedido WHERE id_estado_pedido = $1', [req.params.id]);
+    const result = await pool.query("SELECT * FROM Estados_pedido");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/update_estado/:id", async (req, res) => {
+  const { nombre_estado, creado_por_admin_id, modificado_por_admin_id } =
+    req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE Estados_pedido SET nombre_estado = $2,
+        creado_por_admin_id = $3, modificado_por_admin_id = $4
+       WHERE id_estado_pedido = $1 RETURNING *`,
+      [
+        req.params.id,
+        nombre_estado,
+        creado_por_admin_id,
+        modificado_por_admin_id,
+      ]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/delete_estado/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM Estados_pedido WHERE id_estado_pedido = $1", [
+      req.params.id,
+    ]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -415,8 +490,14 @@ app.delete('/delete_estado/:id', async (req, res) => {
 });
 
 // categorias CRUD
-app.post('/create_categoria', async (req, res) => {
-  const { id_menu, nombre, orden, creado_por_admin_id, modificado_por_admin_id } = req.body;
+router.post("/create_categoria", async (req, res) => {
+  const {
+    id_menu,
+    nombre,
+    orden,
+    creado_por_admin_id,
+    modificado_por_admin_id,
+  } = req.body;
   try {
     const result = await pool.query(
       `INSERT INTO Categorias (id_menu, nombre, orden, creado_por_admin_id, modificado_por_admin_id)
@@ -429,32 +510,11 @@ app.post('/create_categoria', async (req, res) => {
   }
 });
 
-app.get('/read_categoria/:id', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM Categorias WHERE id_categoria = $1', [req.params.id]);
-    res.json(result.rows[0]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.get('/read_categorias', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM Categorias');
-    res.json(result.rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-app.put('/update_categoria/:id', async (req, res) => {
-  const { id_menu, nombre, orden, creado_por_admin_id, modificado_por_admin_id } = req.body;
+router.get("/read_categoria/:id", async (req, res) => {
   try {
     const result = await pool.query(
-      `UPDATE Categorias SET id_menu = $2, nombre = $3, orden = $4,
-        creado_por_admin_id = $5, modificado_por_admin_id = $6
-       WHERE id_categoria = $1 RETURNING *`,
-      [req.params.id, id_menu, nombre, orden, creado_por_admin_id, modificado_por_admin_id]
+      "SELECT * FROM Categorias WHERE id_categoria = $1",
+      [req.params.id]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -462,9 +522,48 @@ app.put('/update_categoria/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_categoria/:id', async (req, res) => {
+router.get("/read_categorias", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Categorias WHERE id_categoria = $1', [req.params.id]);
+    const result = await pool.query("SELECT * FROM Categorias");
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/update_categoria/:id", async (req, res) => {
+  const {
+    id_menu,
+    nombre,
+    orden,
+    creado_por_admin_id,
+    modificado_por_admin_id,
+  } = req.body;
+  try {
+    const result = await pool.query(
+      `UPDATE Categorias SET id_menu = $2, nombre = $3, orden = $4,
+        creado_por_admin_id = $5, modificado_por_admin_id = $6
+       WHERE id_categoria = $1 RETURNING *`,
+      [
+        req.params.id,
+        id_menu,
+        nombre,
+        orden,
+        creado_por_admin_id,
+        modificado_por_admin_id,
+      ]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.delete("/delete_categoria/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM Categorias WHERE id_categoria = $1", [
+      req.params.id,
+    ]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -472,46 +571,93 @@ app.delete('/delete_categoria/:id', async (req, res) => {
 });
 
 // pedidos CRUD
-app.post('/create_pedido', async (req, res) => {
-  const { fecha_hora, mesa, id_estado_pedido, tiempo_espera_pedido, tiempo_espera_actualizado, comentarios } = req.body;
+router.post("/create_pedido", async (req, res) => {
+  const {
+    fecha_hora,
+    mesa,
+    id_estado_pedido,
+    tiempo_espera_actualizado,
+    comentarios,
+  } = req.body;
   try {
     const result = await pool.query(
-      `INSERT INTO Pedidos (fecha_hora, mesa, id_estado_pedido, tiempo_espera_pedido, tiempo_espera_actualizado, comentarios)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [fecha_hora, mesa, id_estado_pedido, tiempo_espera_pedido, tiempo_espera_actualizado, comentarios]
+      `INSERT INTO Pedidos (fecha_hora, mesa, id_estado_pedido, tiempo_espera_actualizado, comentarios)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [
+        fecha_hora,
+        mesa,
+        id_estado_pedido,
+        tiempo_espera_actualizado,
+        comentarios,
+      ]
     );
-    res.json(result.rows[0]);
+    res.json({
+      orderID: result.rows[0].id_pedido,
+      success: true,
+      message: "Pedido creado exitosamente",
+      pedido: result.rows[0],
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error al crear el pedido",
+      error: err.message,
+    });
   }
 });
 
-app.get('/read_pedido/:id', async (req, res) => {
+router.get("/read_pedido/:id", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Pedidos WHERE id_pedido = $1', [req.params.id]);
-    res.json(result.rows[0]);
+    const result = await pool.query(
+      "SELECT * FROM Pedidos WHERE id_pedido = $1",
+      [req.params.id]
+    );
+    res.json({
+      success: true,
+      message: "Pedido encontrado",
+      pedido: result.rows[0],
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error al encontrar el pedido",
+      error: err.message,
+    });
   }
 });
 
-app.get('/read_pedidos', async (req, res) => {
+router.get("/read_pedidos", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Pedidos');
+    const result = await pool.query("SELECT * FROM Pedidos");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/update_pedido/:id', async (req, res) => {
-  const { fecha_hora, mesa, id_estado_pedido, tiempo_espera_pedido, tiempo_espera_actualizado, comentarios } = req.body;
+router.put("/update_pedido/:id", async (req, res) => {
+  const {
+    fecha_hora,
+    mesa,
+    id_estado_pedido,
+    tiempo_espera_pedido,
+    tiempo_espera_actualizado,
+    comentarios,
+  } = req.body;
   try {
     const result = await pool.query(
       `UPDATE Pedidos SET fecha_hora = $2, mesa = $3, id_estado_pedido = $4,
         tiempo_espera_pedido = $5, tiempo_espera_actualizado = $6, comentarios = $7
        WHERE id_pedido = $1 RETURNING *`,
-      [req.params.id, fecha_hora, mesa, id_estado_pedido, tiempo_espera_pedido, tiempo_espera_actualizado, comentarios]
+      [
+        req.params.id,
+        fecha_hora,
+        mesa,
+        id_estado_pedido,
+        tiempo_espera_pedido,
+        tiempo_espera_actualizado,
+        comentarios,
+      ]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -519,9 +665,11 @@ app.put('/update_pedido/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_pedido/:id', async (req, res) => {
+router.delete("/delete_pedido/:id", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Pedidos WHERE id_pedido = $1', [req.params.id]);
+    await pool.query("DELETE FROM Pedidos WHERE id_pedido = $1", [
+      req.params.id,
+    ]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -529,7 +677,7 @@ app.delete('/delete_pedido/:id', async (req, res) => {
 });
 
 // detalles pedido CRUD
-app.post('/create_detalle_pedido', async (req, res) => {
+router.post("/create_detalle_pedido", async (req, res) => {
   const { id_pedido, id_plato, cantidad, notas } = req.body;
   try {
     const result = await pool.query(
@@ -543,25 +691,28 @@ app.post('/create_detalle_pedido', async (req, res) => {
   }
 });
 
-app.get('/read_detalle_pedido/:id', async (req, res) => {
+router.get("/read_detalle_pedido/:id", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Detalles_pedido WHERE id_detalle = $1', [req.params.id]);
+    const result = await pool.query(
+      "SELECT * FROM Detalles_pedido WHERE id_detalle = $1",
+      [req.params.id]
+    );
     res.json(result.rows[0]);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/read_detalles_pedidos', async (req, res) => {
+router.get("/read_detalles_pedidos", async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM Detalles_pedido');
+    const result = await pool.query("SELECT * FROM Detalles_pedido");
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-app.put('/update_detalle_pedido/:id', async (req, res) => {
+router.put("/update_detalle_pedido/:id", async (req, res) => {
   const { id_pedido, id_plato, cantidad, notas } = req.body;
   try {
     const result = await pool.query(
@@ -575,11 +726,60 @@ app.put('/update_detalle_pedido/:id', async (req, res) => {
   }
 });
 
-app.delete('/delete_detalle_pedido/:id', async (req, res) => {
+router.delete("/delete_detalle_pedido/:id", async (req, res) => {
   try {
-    await pool.query('DELETE FROM Detalles_pedido WHERE id_detalle = $1', [req.params.id]);
+    await pool.query("DELETE FROM Detalles_pedido WHERE id_detalle = $1", [
+      req.params.id,
+    ]);
     res.sendStatus(204);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.post("/select_day_plate", async (req, res) => {
+  const { id_plato, id_menu } = req.body;
+
+  try {
+    const result = await pool.query(
+      `SELECT id_categoria
+       FROM Categorias
+       WHERE nombre = 'Menú del Día' AND id_menu = $1`,
+      [id_menu]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No existe categoría 'Menú del Día' para ese menú",
+      });
+    }
+    const id_categoria = result.rows[0].id_categoria;
+
+    await pool.query(
+      `UPDATE Platos
+       SET id_categoria = $1
+       WHERE id_plato = $2`,
+      [id_categoria, id_plato]
+    );
+
+    const platosResult = await pool.query(
+      `SELECT * FROM Platos WHERE id_plato = $1`,
+      [id_plato]
+    );
+
+    res.json({
+      success: true,
+      message: "Plato asignado al menú del día correctamente",
+      plato: platosResult.rows[0],
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Error al asignar el plato al menú del día",
+      error: err.message,
+    });
+  }
+});
+
+export default router;

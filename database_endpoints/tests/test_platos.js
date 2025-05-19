@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 (async () => {
-  const base = 'http://localhost:8080';
+  const base = 'http://localhost:3000';
 
   const body = {
     id_categoria: 1,
