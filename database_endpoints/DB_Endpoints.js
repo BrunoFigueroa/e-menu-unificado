@@ -1,8 +1,4 @@
-const express = require('express');
 const { Pool } = require('pg');
-
-const app = express();
-const port = 3000;
 
 const pool = new Pool({
   user: 'usuario',
@@ -11,24 +7,6 @@ const pool = new Pool({
   password: 'contrasena',
   port: 5432,
 });
-
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello world! (si esto no aparece, hay un problema con express)');
-});
-
-// ping para testear conexion.
-app.get('/ping', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.send(`Conexión exitosa: ${result.rows[0].now}`);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error de conexión a la base de datos');
-  }
-});
-
 // Operaciones CRUD para todas las tablas.
 
 // Platos:
@@ -64,7 +42,10 @@ app.post('/create_plato', async (req, res) => {
         modificado_por_admin_id
       ]
     );
-    res.json(result.rows[0]);
+   res.json({
+  success: true,
+  data: result.rows[0],
+});
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -111,7 +92,7 @@ app.put('/update_plato/:id', async (req, res) => {
       `UPDATE Platos SET
         id_categoria = $2,
         nombre = $3,
-        precio = $4;
+        precio = $4,
         descripcion = $5,
         tiempo_estimado = $6,
         imagen_url = $7,
@@ -601,15 +582,4 @@ app.delete('/delete_detalle_pedido/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
-
-
-
-
-
-
-
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
 });
