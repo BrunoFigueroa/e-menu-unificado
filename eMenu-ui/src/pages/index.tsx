@@ -1,45 +1,42 @@
 import React, { Fragment } from "react";
 import type { ReactElement } from "react";
 import LandingLayout from "@/components/layout/landing/layout";
-import PopularRecipes from "@/components/popularRecipes";
+import Menu from "@/components/menu";
 
 const HomeView = () => {
-  const [popularRecipes, setPopularRecipes] = React.useState([
-    {
-      id: 1,
-      nombre: "Tortilla de patatas",
-      categoria: "Española",
-      votos: 100,
-    },
-    {
-      id: 2,
-      nombre: "Paella",
-      categoria: "Española",
-      votos: 90,
-    },
-    {
-      id: 3,
-      nombre: "Ceviche",
-      categoria: "Peruana",
-      votos: 80,
-    },
-  ]);
-  
   return (
     <Fragment>
-      <div className="px-16 py-16">
-        <div className="col-lg-6 col-md-8 mx-auto">
-          <h1 className="text-3xl font-mono font-semibold">
-            Bienvenidos a nuestra aplicación de recetas de cocina
+      <section
+        id="inicio"
+        className="relative h-[50vh] bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1509042239860-f550ce710b93')",
+        }}
+      >
+        <div
+          className="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-end items-center pb-10 cursor-pointer"
+          onClick={() =>
+            document
+              .getElementById("menu")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
+        >
+          <h1 className="text-white text-4xl font-bold mb-2">
+            Bienvenido a Café Magnolia
           </h1>
-          <p className="text-lg font-mono py-4">
-            Descubre nuevas recetas, comparte tus favoritas y vota por las
-            mejores.
-          </p>
+          <p className="text-white text-sm">Haz clic aquí para ver el menú</p>
         </div>
-        <div className="py-8 mx-40 text-xl rounded-lg bg-gray-100">
-          <PopularRecipes popularRecipes={popularRecipes} />
-        </div>
+      </section>
+
+      <Menu />
+
+      <div className="text-center my-10">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/415/415733.png"
+          alt="Logo Café"
+          className="w-24 mx-auto"
+        />
       </div>
     </Fragment>
   );

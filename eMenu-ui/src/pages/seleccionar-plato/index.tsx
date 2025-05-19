@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
-import PlaceOrderForm from "@/components/form/order/place-order";
+import SelectDayPlatoForm from "@/components/form/admin/select-day-plato";
 import LandingLayout from "@/components/layout/landing/layout";
 
-const PlaceOrderView = () => {
+const SelectPlateView = () => {
   return (
     <div className="grid justify-center py-10">
       <div className="border p-4 rounded bg-white">
-        <PlaceOrderForm />
+        <SelectDayPlatoForm />
       </div>
     </div>
   );
 };
 
-PlaceOrderView.getLayout = function getLayout(page: React.ReactElement) {
+SelectPlateView.getLayout = function getLayout(page: React.ReactElement) {
   return <LandingLayout showBreadcrumb={false}>{page}</LandingLayout>;
 };
 
-export default PlaceOrderView;
+export default SelectPlateView;

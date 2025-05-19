@@ -8,9 +8,19 @@ import { usePlaceOrderHook } from "@/hooks/order/use-place-order";
 import { useRouter } from "next/router";
 
 const formSchema = z.object({
-  pedido: z.string().min(1, {
-    message: "El pedido es requerido.",
+  fecha_hora: z.string().min(1, {
+    message: "La fecha y hora son requeridas.",
   }),
+  mesa: z.string().min(1, {
+    message: "La mesa es requerida.",
+  }),
+  id_estado_pedido: z.string().min(1, {
+    message: "El estado del pedido es requerido.",
+  }),
+  tiempo_espera_actualizado: z.string().min(1, {
+    message: "El tiempo de espera es requerido.",
+  }),
+  comentarios: z.string().optional(),
 });
 
 const PlaceOrderForm = () => {
@@ -27,7 +37,11 @@ const PlaceOrderForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const placeOrderRequest = {
-      pedido: values.pedido,
+      fecha_hora: values.fecha_hora,
+      mesa: values.mesa,
+      id_estado_pedido: values.id_estado_pedido,
+      tiempo_espera_actualizado: values.tiempo_espera_actualizado,
+      comentarios: values.comentarios || "",
     };
 
     await mutate(placeOrderRequest, {
@@ -52,19 +66,98 @@ const PlaceOrderForm = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label
-            htmlFor="pedido"
+            htmlFor="fecha_hora"
             className="block text-sm font-medium text-gray-700"
           >
-            Pedido
+            Fecha y Hora
           </label>
           <input
             type="text"
-            id="pedido"
-            {...register("pedido")}
+            id="fecha_hora"
+            {...register("fecha_hora")}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
           />
-          {errors.pedido && (
-            <p className="text-sm text-red-500 mt-1">{errors.pedido.message}</p>
+          {errors.fecha_hora && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.fecha_hora.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="mesa"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Mesa
+          </label>
+          <input
+            type="text"
+            id="mesa"
+            {...register("mesa")}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+          />
+          {errors.mesa && (
+            <p className="text-sm text-red-500 mt-1">{errors.mesa.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="id_estado_pedido"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Estado del Pedido
+          </label>
+          <input
+            type="text"
+            id="id_estado_pedido"
+            {...register("id_estado_pedido")}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+          />
+          {errors.id_estado_pedido && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.id_estado_pedido.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="tiempo_espera_actualizado"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Tiempo de Espera Actualizado
+          </label>
+          <input
+            type="text"
+            id="tiempo_espera_actualizado"
+            {...register("tiempo_espera_actualizado")}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+          />
+          {errors.tiempo_espera_actualizado && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.tiempo_espera_actualizado.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="comentarios"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Comentarios
+          </label>
+          <textarea
+            id="comentarios"
+            {...register("comentarios")}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-gray-500 focus:border-gray-500"
+          />
+          {errors.comentarios && (
+            <p className="text-sm text-red-500 mt-1">
+              {errors.comentarios.message}
+            </p>
           )}
         </div>
 
